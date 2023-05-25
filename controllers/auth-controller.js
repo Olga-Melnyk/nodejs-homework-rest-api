@@ -42,7 +42,7 @@ const login = async (req, res) => {
   }
 
   const payload = {
-    id: user._id,
+    contactId: user._id,
   };
 
   const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "23h" });
