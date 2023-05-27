@@ -6,12 +6,26 @@ const { ctrlWrapper } = require("../decorators");
 
 const listContacts = async (req, res) => {
   const { _id: owner } = req.user;
-  const { page = 1, limit = 20 } = req.query;
+  const { page = 1, limit = 20, favorite } = req.query;
   const skip = (page - 1) * limit;
-  const result = await Contact.find({ owner }, "-createdAt -updatedAt", {
-    skip,
-    limit,
-  }).populate("owner", "password email subscription");
+  const filter = {};
+
+  if (favorite === "true") {
+    filter.favorite = true;
+  } else if (favorite === "false") {
+    filter.favorite = false;
+  }
+
+  const filteredOut = filter.favorite;
+
+  const result = await Contact.find(
+    { owner, favorite: filteredOut },
+    "-createdAt -updatedAt",
+    {
+      skip,
+      limit,
+    }
+  ).populate("owner", "password email subscription");
   res.json(result);
 };
 
